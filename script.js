@@ -11,7 +11,6 @@ function initDefaultRows() {
 }
 
 function addTableRow(isFirst = false) {
-    const idx = rowsData.length;
     const tr = document.createElement('tr');
 
     tr.innerHTML = `
@@ -51,7 +50,7 @@ function removeWind() {
     document.getElementById('result_label').style.display = 'none';
 }
 
-// Ваша оригинальная математика МК и времени из Python
+// Оригинальные математические функции расчета из Python
 function calculateMk(zmpu, wind_dir, wind_speed, speed) {
     let angle = (wind_dir + 180 - zmpu) * Math.PI / 180;
     let correction = (wind_speed / speed) * Math.sin(angle) * 57.3;
@@ -76,7 +75,7 @@ function calculateRoute() {
 
     const sameWind = document.getElementById('same_wind_cb').checked;
 
-    // Автозаполнение ветра
+    // Автозаполнение параметров ветра по маршруту
     if (sameWind) {
         let tDir = "", tSpeed = "";
         for (let row of rowsData) {
@@ -276,5 +275,5 @@ function newRoute() {
     document.getElementById('result_label').style.display = 'none';
 }
 
-// Запуск при старте страницы
+// Первичный запуск при открытии страницы
 initDefaultRows();
