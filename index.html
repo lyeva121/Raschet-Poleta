@@ -21,9 +21,9 @@
             padding: 8px; 
         }
         
-        /* Узкое рабочее окно для мобильных экранов */
+        /* Рабочее окно подстраивается под итоговую ширину таблицы */
         .app-container {
-            max-width: 480px;
+            max-width: 580px;
             margin: 0 auto;
         }
 
@@ -71,26 +71,29 @@
             padding: 5px;
         }
         table { 
-            width: 100%; 
             border-collapse: collapse; 
             background: white; 
-            table-layout: fixed; /* Строгое соблюдение заданной ширины */
+            table-layout: fixed; /* Строгое соблюдение заданной ширины в знаках */
+            font-family: monospace; /* Моноширинный шрифт для точного расчета знаков */
         }
         th, td { 
             border: 1px solid #ddd; 
-            padding: 4px 2px; 
+            padding: 4px 1px; 
             text-align: center; 
-            font-size: 12px; 
+            font-size: 13px; 
+            box-sizing: border-box;
         }
         th { 
             background: #d9d9d9; 
             font-weight: bold; 
         }
         
-        /* Точная настройка пропорций столбцов */
-        .col-ppm, .col-note { width: 18%; }
-        .col-equal-4 { width: 11%; } /* ЗМПУ, Расстояние, Напр., Скор. — строго одинаковые */
-        .col-equal-2 { width: 10%; } /* МК и Время — строго одинаковые */
+        /* ТОЧНАЯ НАСТРОЙКА ШИРИНЫ СТОЛБЦОВ В ЗНАКАХ (ch) */
+        /* Добавляем небольшой запас на внутренние отступы (padding) */
+        .col-ppm { width: 18ch; }         /* ППМ: 16 знаков + запас */
+        .col-note { width: 32ch; }        /* Примечание: 30 знаков + запас */
+        .col-equal-6 { width: 7.5ch; }     /* ЗМПУ, Дист, Напр, Скор, МК: 6 знаков + запас */
+        .col-time { width: 9.5ch; }       /* Время: 8 знаков + запас */
 
         /* Компактные кнопки */
         .btn { 
@@ -154,16 +157,16 @@
                 <thead>
                     <tr>
                         <th rowspan="2" class="col-ppm">ППМ</th>
-                        <th rowspan="2" class="col-equal-4">ЗМПУ</th>
-                        <th rowspan="2" class="col-equal-4">Дист.</th>
-                        <th colspan="2" style="width: 22%;">Ветер метео</th>
-                        <th rowspan="2" class="col-equal-2">МК</th>
-                        <th rowspan="2" class="col-equal-2">Время</th>
+                        <th rowspan="2" class="col-equal-6">ЗМПУ</th>
+                        <th rowspan="2" class="col-equal-6">Дист.</th>
+                        <th colspan="2">Ветер метео</th>
+                        <th rowspan="2" class="col-equal-6">МК</th>
+                        <th rowspan="2" class="col-time">Время</th>
                         <th rowspan="2" class="col-note">Прим.</th>
                     </tr>
                     <tr>
-                        <th class="col-equal-4">Напр(°)</th>
-                        <th class="col-equal-4">Скор(к/ч)</th>
+                        <th class="col-equal-6">Напр(°)</th>
+                        <th class="col-equal-6">Скор(к/ч)</th>
                     </tr>
                 </thead>
                 <tbody id="table_body">
