@@ -21,9 +21,9 @@
             padding: 8px; 
         }
         
-        /* Рабочее окно подстраивается под итоговую ширину таблицы */
+        /* Автоматическое расширение окна под итоговый размер таблицы */
         .app-container {
-            max-width: 580px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
@@ -53,7 +53,7 @@
             justify-content: center;
         }
         input, select { 
-            padding: 6px; 
+            padding: 6px 2px; 
             border: 1px solid #ccc; 
             border-radius: 4px; 
             font-size: 13px; 
@@ -65,7 +65,7 @@
             min-width: 110px; 
         }
         
-        /* Контейнер таблицы */
+        /* Контейнер таблицы с горизонтальным скроллом, если экран смартфона совсем узкий */
         .table-container { 
             overflow-x: auto; 
             padding: 5px;
@@ -73,8 +73,9 @@
         table { 
             border-collapse: collapse; 
             background: white; 
-            table-layout: fixed; /* Строгое соблюдение заданной ширины в знаках */
-            font-family: monospace; /* Моноширинный шрифт для точного расчета знаков */
+            table-layout: fixed; /* Принудительный строгий режим размеров */
+            font-family: monospace; /* Все символы одинаковой ширины */
+            width: auto; /* Позволяет таблице занять ровно столько, сколько задано в ch */
         }
         th, td { 
             border: 1px solid #ddd; 
@@ -82,18 +83,24 @@
             text-align: center; 
             font-size: 13px; 
             box-sizing: border-box;
+            overflow: hidden; /* Защита от распирания ячейки */
         }
         th { 
             background: #d9d9d9; 
             font-weight: bold; 
         }
         
-        /* ТОЧНАЯ НАСТРОЙКА ШИРИНЫ СТОЛБЦОВ В ЗНАКАХ (ch) */
-        /* Добавляем небольшой запас на внутренние отступы (padding) */
-        .col-ppm { width: 18ch; }         /* ППМ: 16 знаков + запас */
-        .col-note { width: 32ch; }        /* Примечание: 30 знаков + запас */
-        .col-equal-6 { width: 7.5ch; }     /* ЗМПУ, Дист, Напр, Скор, МК: 6 знаков + запас */
-        .col-time { width: 9.5ch; }       /* Время: 8 знаков + запас */
+        /* ЖЕСТКАЯ ФИКСАЦИЯ ШИРИНЫ СТОЛБЦОВ И ПОЛЕЙ ВВОДA (В ЗНАКАХ) */
+        .col-ppm { width: 16ch; }
+        .col-ppm input { width: 16ch; text-align: left; }
+
+        .col-note { width: 30ch; }
+        .col-note input { width: 30ch; text-align: left; }
+
+        .col-equal-6 { width: 6ch; }
+        .col-equal-6 input { width: 6ch; text-align: center; }
+
+        .col-time { width: 8ch; }
 
         /* Компактные кнопки */
         .btn { 
@@ -159,7 +166,7 @@
                         <th rowspan="2" class="col-ppm">ППМ</th>
                         <th rowspan="2" class="col-equal-6">ЗМПУ</th>
                         <th rowspan="2" class="col-equal-6">Дист.</th>
-                        <th colspan="2">Ветер метео</th>
+                        <th colspan="2" style="width: 12ch;">Ветер метео</th>
                         <th rowspan="2" class="col-equal-6">МК</th>
                         <th rowspan="2" class="col-time">Время</th>
                         <th rowspan="2" class="col-note">Прим.</th>
