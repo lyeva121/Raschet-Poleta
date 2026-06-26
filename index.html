@@ -21,9 +21,8 @@
             padding: 8px; 
         }
         
-        /* Автоматическое расширение окна под итоговый размер таблицы */
         .app-container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
@@ -65,7 +64,6 @@
             min-width: 110px; 
         }
         
-        /* Контейнер таблицы с горизонтальным скроллом, если экран смартфона совсем узкий */
         .table-container { 
             overflow-x: auto; 
             padding: 5px;
@@ -73,9 +71,9 @@
         table { 
             border-collapse: collapse; 
             background: white; 
-            table-layout: fixed; /* Принудительный строгий режим размеров */
-            font-family: monospace; /* Все символы одинаковой ширины */
-            width: auto; /* Позволяет таблице занять ровно столько, сколько задано в ch */
+            table-layout: fixed; 
+            font-family: monospace; 
+            width: auto; 
         }
         th, td { 
             border: 1px solid #ddd; 
@@ -83,24 +81,24 @@
             text-align: center; 
             font-size: 13px; 
             box-sizing: border-box;
-            overflow: hidden; /* Защита от распирания ячейки */
+            overflow: hidden; 
         }
         th { 
             background: #d9d9d9; 
             font-weight: bold; 
         }
         
-        /* ЖЕСТКАЯ ФИКСАЦИЯ ШИРИНЫ СТОЛБЦОВ И ПОЛЕЙ ВВОДA (В ЗНАКАХ) */
+        /* ЖЕСТКАЯ НАСТРОЙКА ШИРИНЫ СТОЛБЦОВ И ЯЧЕЕК ВВОДА */
         .col-ppm { width: 16ch; }
         .col-ppm input { width: 16ch; text-align: left; }
 
         .col-note { width: 30ch; }
         .col-note input { width: 30ch; text-align: left; }
 
-        .col-equal-6 { width: 6ch; }
-        .col-equal-6 input { width: 6ch; text-align: center; }
+        .col-equal-8 { width: 8ch; }
+        .col-equal-8 input { width: 8ch; text-align: center; }
 
-        .col-time { width: 8ch; }
+        .col-time { width: 12ch; }
 
         /* Компактные кнопки */
         .btn { 
@@ -164,16 +162,16 @@
                 <thead>
                     <tr>
                         <th rowspan="2" class="col-ppm">ППМ</th>
-                        <th rowspan="2" class="col-equal-6">ЗМПУ</th>
-                        <th rowspan="2" class="col-equal-6">Дист.</th>
-                        <th colspan="2" style="width: 12ch;">Ветер метео</th>
-                        <th rowspan="2" class="col-equal-6">МК</th>
+                        <th rowspan="2" class="col-equal-8">ЗМПУ</th>
+                        <th rowspan="2" class="col-equal-8">Дист.</th>
+                        <th colspan="2" style="width: 16ch;">Ветер метео</th>
+                        <th rowspan="2" class="col-equal-8">МК</th>
                         <th rowspan="2" class="col-time">Время</th>
                         <th rowspan="2" class="col-note">Прим.</th>
                     </tr>
                     <tr>
-                        <th class="col-equal-6">Напр(°)</th>
-                        <th class="col-equal-6">Скор(к/ч)</th>
+                        <th class="col-equal-8">Напр(°)</th>
+                        <th class="col-equal-8">Скор(к/ч)</th>
                     </tr>
                 </thead>
                 <tbody id="table_body">

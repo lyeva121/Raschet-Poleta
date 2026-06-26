@@ -13,15 +13,17 @@ function initDefaultRows() {
 function addTableRow(isFirst = false) {
     const tr = document.createElement('tr');
 
+    // Добавляем классы col-ppm, col-equal-8, col-time, col-note прямо в теги td,
+    // чтобы динамические строки таблицы строго соответствовали ширине шапки
     tr.innerHTML = `
-        <td><input type="text" class="cell-point" style="text-align: left;"></td>
-        <td><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
-        <td><input type="number" class="cell-dist" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
-        <td><input type="number" class="cell-wdir" style="text-align: center;"></td>
-        <td><input type="number" class="cell-wspeed" style="text-align: center;"></td>
-        <td class="cell-mk-lbl">${isFirst ? '—' : ''}</td>
-        <td class="cell-time-lbl">${isFirst ? '—' : ''}</td>
-        <td><input type="text" class="cell-note" style="text-align: left;"></td>
+        <td class="col-ppm"><input type="text" class="cell-point" style="text-align: left;"></td>
+        <td class="col-equal-8"><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
+        <td class="col-equal-8"><input type="number" class="cell-dist" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
+        <td class="col-equal-8"><input type="number" class="cell-wdir" style="text-align: center;"></td>
+        <td class="col-equal-8"><input type="number" class="cell-wspeed" style="text-align: center;"></td>
+        <td class="col-equal-8 cell-mk-lbl">${isFirst ? '—' : ''}</td>
+        <td class="col-time cell-time-lbl">${isFirst ? '—' : ''}</td>
+        <td class="col-note"><input type="text" class="cell-note" style="text-align: left;"></td>
     `;
     tableBody.appendChild(tr);
     rowsData.push(tr);
@@ -182,6 +184,7 @@ function saveRoute() {
     a.click();
 }
 
+// Запуск триггера выбора файла
 function triggerOpenRoute() { document.getElementById('file_input').click(); }
 
 function openRoute(event) {
