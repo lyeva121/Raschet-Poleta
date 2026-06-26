@@ -1,0 +1,16 @@
+{
+  "nav_type": "none",
+  "name": "Расчёт авиационного маршрута",
+  "short_name": "Навигатор",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f4f9",
+  "theme_color": "#4CAF50",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/984/984218.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

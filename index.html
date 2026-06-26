@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расчёт маршрута вертолета</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <style>
+        :root { --primary: #4CAF50; --bg: #f4f4f9; --text: #333; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .dev-label { font-style: italic; color: gray; font-size: 12px; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .flex-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 100%; box-sizing: border-radius; }
+        .input-group { flex: 1; min-width: 120px; }
+        .table-container { overflow-x: auto; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; background: white; min-width: 750px; }
+        th, td { border: 1px solid #ddd; padding: 6px; text-align: center; font-size: 14px; }
+        th { background: #d9d9d9; font-weight: bold; }
+        td.left { text-align: left; }
+        .btn { background: #e0e0e0; border: none; padding: 10px 14px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; text-align: center; flex: 1; min-width: 130px; }
+        .btn-calc { background: var(--primary); color: white; font-size: 18px; padding: 15px; width: 100%; margin-top: 15px; border-radius: 6px; }
+        .results { font-weight: bold; font-size: 16px; margin-top: 15px; white-space: pre-line; }
+        .disabled-cell { background: #f0f0f0; color: #aaa; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Расчёт маршрута</h2>
+        <div class="dev-label">Разработчик Лёвочкин Виктор</div>
+    </div>
+
+    <div class="card flex-row">
+        <div class="input-group">
+            <label>Скорость (км/ч)</label>
+            <input type="number" id="speed_entry" value="180" style="text-align: center;">
+        </div>
+        <div class="input-group" style="flex: 2; min-width: 250px; display: flex; align-items: center; gap: 5px; margin-top: 18px;">
+            <input type="checkbox" id="same_wind_cb" style="width: auto;">
+            <label for="same_wind_cb">Ветер по всему маршруту одинаковый</label>
+        </div>
+    </div>
+
+    <div class="card table-container">
+        <table id="route_table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 25%;">ППМ</th>
+                    <th rowspan="2" style="width: 10%;">ЗМПУ</th>
+                    <th rowspan="2" style="width: 12%;">Расстояние</th>
+                    <th colspan="2">Ветер метео</th>
+                    <th rowspan="2" style="width: 10%;">МК</th>
+                    <th rowspan="2" style="width: 18%;">Время (эт / общ)</th>
+                    <th rowspan="2" style="width: 25%;">Примечание</th>
+                </tr>
+                <tr>
+                    <th>Напр. (°)</th>
+                    <th>Скор. (км/ч)</th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="card flex-row">
+        <button class="btn" onclick="addTableRow()">Добавить ППМ</button>
+        <button class="btn" onclick="reverseRoute()">Реверс</button>
+        <button class="btn" onclick="removeWind()">Убрать ветер</button>
+        <button class="btn" onclick="newRoute()">Новый маршрут</button>
+    </div>
+
+    <div class="card flex-row">
+        <button class="btn" onclick="saveRoute()">Сохранить</button>
+        <button class="btn" onclick="triggerOpenRoute()">Открыть</button>
+        <input type="file" id="file_input" style="display: none;" onchange="openRoute(event)">
+    </div>
+
+    <button class="btn-calc" onclick="calculateRoute()">РАСЧЁТ</button>
+
+    <div class="card results" id="result_label" style="display: none;"></div>
+
+    <script src="script.js"></script>
+    <script>
+        // Регистрация Service Worker для оффлайн работы
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error', err));
+        }
+    </script>
+</body>
+</html>
