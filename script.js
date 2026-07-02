@@ -13,6 +13,7 @@ function initDefaultRows() {
 function addTableRow(isFirst = false) {
     const tr = document.createElement('tr');
 
+    // Столбец МК получил класс col-equal-8 вместо col-time
     tr.innerHTML = `
         <td class="col-ppm"><input type="text" class="cell-point" style="text-align: left;"></td>
         <td class="col-equal-8"><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
@@ -39,6 +40,11 @@ function removeWind() {
     rowsData.forEach((row, i) => {
         row.querySelector('.cell-wdir').value = '';
         row.querySelector('.cell-wspeed').value = '';
+        
+        // Сбрасываем серую подсветку при изменении/очистке параметров ветра
+        row.querySelector('.cell-mk-lbl').classList.remove('calculated-highlight');
+        row.querySelector('.cell-time-lbl').classList.remove('calculated-highlight');
+
         if (i === 0) {
             row.querySelector('.cell-mk-lbl').innerText = '—';
             row.querySelector('.cell-time-lbl').innerText = '—';
@@ -155,9 +161,16 @@ function calculateRoute() {
 
         const formatTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-        // Использование безопасного Юникод-кода \u00B0 для гарантированного отображения градуса
-        row.querySelector('.cell-mk-lbl').innerText = mk + "\u00B0";
-        row.querySelector('.cell-time-lbl').innerText = formatTime(minutes) + " / " + formatTime(totalMin);
+        // Вывод МК со значком градуса безопасным кодом Unicode
+        const mkCell = row.querySelector('.cell-mk-lbl');
+        const timeCell = row.querySelector('.cell-time-lbl');
+        
+        mkCell.innerText = mk + "\u00B0";
+        timeCell.innerText = formatTime(minutes) + " / " + formatTime(totalMin);
+
+        // Добавляем выделение светло-серым цветом после успешного расчета
+        mkCell.classList.add('calculated-highlight');
+        timeCell.classList.add('calculated-highlight');
     }
 
     const formatTotalTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;

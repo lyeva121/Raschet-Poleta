@@ -90,14 +90,20 @@
             font-weight: bold; 
         }
         
-        /* Жесткие стили для ячеек МК и Время */
+        /* Жесткие стили для ячеек МК и Время (сделаны ЖИРНЫМИ) */
         .cell-mk-lbl, .cell-time-lbl {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important;
             font-size: 13px !important;
+            font-weight: bold !important; /* Шрифт сделан жирным */
             text-align: center !important;
         }
+
+        /* Класс для подсветки вычисленных ячеек светло-серым цветом */
+        .calculated-highlight {
+            background-color: #f0f0f0 !important;
+        }
         
-        /* Ширина столбцов */
+        /* Настройка ширины столбцов */
         .col-ppm { width: 16ch; }
         .col-ppm input { width: 16ch; text-align: left; }
 
@@ -176,7 +182,7 @@
                         <th colspan="2" style="width: 16ch;">Ветер метео</th>
                         <th rowspan="2" class="col-equal-8">МК</th>
                         <th rowspan="2" class="col-time">Время</th>
-                        <th rowspan="2" class="col-note">Прим.</th>
+                        <th rowspan="2" class="col-note">Примечание</th>
                     </tr>
                     <tr>
                         <th class="col-equal-8">Напр(°)</th>
