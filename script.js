@@ -13,7 +13,6 @@ function initDefaultRows() {
 function addTableRow(isFirst = false) {
     const tr = document.createElement('tr');
 
-    // К динамическим строкам применяются те же самые классы оформления и ширины, что и к шапке
     tr.innerHTML = `
         <td class="col-ppm"><input type="text" class="cell-point" style="text-align: left;"></td>
         <td class="col-equal-8"><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
@@ -156,7 +155,8 @@ function calculateRoute() {
 
         const formatTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-        row.querySelector('.cell-mk-lbl').innerText = mk;
+        // Добавление значка градуса к вычисленному значению МК
+        row.querySelector('.cell-mk-lbl').innerText = `${mk}°`;
         row.querySelector('.cell-time-lbl').innerText = `${formatTime(minutes)} / ${formatTime(totalMin)}`;
     }
 

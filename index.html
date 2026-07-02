@@ -58,6 +58,7 @@
             font-size: 13px; 
             width: 100%; 
             box-sizing: border-box; 
+            font-family: inherit; /* Наследование единого шрифта */
         }
         .input-group { 
             flex: 1; 
@@ -73,22 +74,23 @@
             background: white; 
             table-layout: fixed; 
             width: auto; 
+            font-family: inherit; /* Единый шрифт для всей таблицы */
         }
         th, td { 
             border: 1px solid #ddd; 
             padding: 4px 1px; 
             text-align: center; 
-            font-size: 13px; 
+            font-size: 13px; /* Одинаковый размер символов для всех ячеек */
             box-sizing: border-box;
             overflow: hidden; 
-            white-space: nowrap; /* Гарантирует, что текст (например, время) не перенесется на вторую строку */
+            white-space: nowrap; 
         }
         th { 
             background: #d9d9d9; 
             font-weight: bold; 
         }
         
-        /* НАСТРОЙКА ШИРИНЫ СТОЛБЦОВ И ЯЧЕЕК ВВОДА В ЗНАКАХ (ch) */
+        /* НАСТРОЙКА ШИРИНЫ СТОЛБЦОВ И ЯЧЕЕК ВВОДА */
         .col-ppm { width: 16ch; }
         .col-ppm input { width: 16ch; text-align: left; }
 
@@ -98,7 +100,6 @@
         .col-equal-8 { width: 8ch; }
         .col-equal-8 input { width: 8ch; text-align: center; }
 
-        /* Столбец времени увеличен до 12ch, чтобы «0:02 / 0:30» гарантированно помещалось в одну строку */
         .col-time { width: 12ch; }
 
         /* Компактные кнопки */
