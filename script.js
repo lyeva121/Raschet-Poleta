@@ -13,8 +13,7 @@ function initDefaultRows() {
 function addTableRow(isFirst = false) {
     const tr = document.createElement('tr');
 
-    // Добавляем классы col-ppm, col-equal-8, col-time, col-note прямо в теги td,
-    // чтобы динамические строки таблицы строго соответствовали ширине шапки
+    // К динамическим строкам применяются те же самые классы оформления и ширины, что и к шапке
     tr.innerHTML = `
         <td class="col-ppm"><input type="text" class="cell-point" style="text-align: left;"></td>
         <td class="col-equal-8"><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
@@ -184,7 +183,6 @@ function saveRoute() {
     a.click();
 }
 
-// Запуск триггера выбора файла
 function triggerOpenRoute() { document.getElementById('file_input').click(); }
 
 function openRoute(event) {
@@ -278,5 +276,4 @@ function newRoute() {
     document.getElementById('result_label').style.display = 'none';
 }
 
-// Первичный запуск при открытии страницы
 initDefaultRows();

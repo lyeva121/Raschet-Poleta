@@ -22,7 +22,7 @@
         }
         
         .app-container {
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
         }
 
@@ -72,7 +72,6 @@
             border-collapse: collapse; 
             background: white; 
             table-layout: fixed; 
-            font-family: monospace; 
             width: auto; 
         }
         th, td { 
@@ -82,13 +81,14 @@
             font-size: 13px; 
             box-sizing: border-box;
             overflow: hidden; 
+            white-space: nowrap; /* Гарантирует, что текст (например, время) не перенесется на вторую строку */
         }
         th { 
             background: #d9d9d9; 
             font-weight: bold; 
         }
         
-        /* ЖЕСТКАЯ НАСТРОЙКА ШИРИНЫ СТОЛБЦОВ И ЯЧЕЕК ВВОДА */
+        /* НАСТРОЙКА ШИРИНЫ СТОЛБЦОВ И ЯЧЕЕК ВВОДА В ЗНАКАХ (ch) */
         .col-ppm { width: 16ch; }
         .col-ppm input { width: 16ch; text-align: left; }
 
@@ -98,6 +98,7 @@
         .col-equal-8 { width: 8ch; }
         .col-equal-8 input { width: 8ch; text-align: center; }
 
+        /* Столбец времени увеличен до 12ch, чтобы «0:02 / 0:30» гарантированно помещалось в одну строку */
         .col-time { width: 12ch; }
 
         /* Компактные кнопки */
@@ -147,11 +148,11 @@
         </div>
 
         <div class="card flex-row">
-            <div class="input-group">
-                <label style="font-size:12px;">Скорость (км/ч)</label>
+            <div class="input-group" style="min-width: 160px;">
+                <label style="font-size:12px; white-space: nowrap;">Скорость (км/ч)</label>
                 <input type="number" id="speed_entry" value="180" style="text-align: center;">
             </div>
-            <div class="input-group" style="flex: 2; min-width: 200px; display: flex; align-items: center; gap: 5px; margin-top: 14px;">
+            <div class="input-group" style="flex: 2; min-width: 220px; display: flex; align-items: center; gap: 5px; margin-top: 14px;">
                 <input type="checkbox" id="same_wind_cb" style="width: auto;">
                 <label for="same_wind_cb" style="font-size:12px;">Ветер по всему маршруту одинаковый</label>
             </div>
@@ -171,7 +172,7 @@
                     </tr>
                     <tr>
                         <th class="col-equal-8">Напр(°)</th>
-                        <th class="col-equal-8">Скор(к/ч)</th>
+                        <th class="col-equal-8">Скор(км/ч)</th>
                     </tr>
                 </thead>
                 <tbody id="table_body">
