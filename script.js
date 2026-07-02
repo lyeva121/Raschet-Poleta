@@ -155,8 +155,8 @@ function calculateRoute() {
 
         const formatTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-        // Вывод МК со значком градуса
-        row.querySelector('.cell-mk-lbl').innerText = mk + "°";
+        // Использование безопасного Юникод-кода \u00B0 для гарантированного отображения градуса
+        row.querySelector('.cell-mk-lbl').innerText = mk + "\u00B0";
         row.querySelector('.cell-time-lbl').innerText = formatTime(minutes) + " / " + formatTime(totalMin);
     }
 
