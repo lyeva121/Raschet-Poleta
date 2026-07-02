@@ -13,15 +13,14 @@ function initDefaultRows() {
 function addTableRow(isFirst = false) {
     const tr = document.createElement('tr');
 
-    // Столбец МК получил класс col-equal-8 вместо col-time
     tr.innerHTML = `
         <td class="col-ppm"><input type="text" class="cell-point" style="text-align: left;"></td>
         <td class="col-equal-8"><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
         <td class="col-equal-8"><input type="number" class="cell-dist" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
         <td class="col-equal-8"><input type="number" class="cell-wdir" style="text-align: center;"></td>
         <td class="col-equal-8"><input type="number" class="cell-wspeed" style="text-align: center;"></td>
-        <td class="col-equal-8 cell-mk-lbl" style="text-align: center;">${isFirst ? '—' : ''}</td>
-        <td class="col-time cell-time-lbl" style="text-align: center;">${isFirst ? '—' : ''}</td>
+        <td class="col-equal-8 cell-mk-lbl" style="text-align: center; font-size: 13px;">${isFirst ? '—' : ''}</td>
+        <td class="col-time cell-time-lbl" style="text-align: center; font-size: 13px;">${isFirst ? '—' : ''}</td>
         <td class="col-note"><input type="text" class="cell-note" style="text-align: left;"></td>
     `;
     tableBody.appendChild(tr);
@@ -41,16 +40,20 @@ function removeWind() {
         row.querySelector('.cell-wdir').value = '';
         row.querySelector('.cell-wspeed').value = '';
         
-        // Сбрасываем серую подсветку при изменении/очистке параметров ветра
-        row.querySelector('.cell-mk-lbl').classList.remove('calculated-highlight');
-        row.querySelector('.cell-time-lbl').classList.remove('calculated-highlight');
+        // Сброс стилей обратно к исходным
+        const mkCell = row.querySelector('.cell-mk-lbl');
+        const timeCell = row.querySelector('.cell-time-lbl');
+        mkCell.style.backgroundColor = '';
+        mkCell.style.fontWeight = 'normal';
+        timeCell.style.backgroundColor = '';
+        timeCell.style.fontWeight = 'normal';
 
         if (i === 0) {
-            row.querySelector('.cell-mk-lbl').innerText = '—';
-            row.querySelector('.cell-time-lbl').innerText = '—';
+            mkCell.innerText = '—';
+            timeCell.innerText = '—';
         } else {
-            row.querySelector('.cell-mk-lbl').innerText = '';
-            row.querySelector('.cell-time-lbl').innerText = '';
+            mkCell.innerText = '';
+            timeCell.innerText = '';
         }
     });
     document.getElementById('result_label').style.display = 'none';
@@ -161,16 +164,19 @@ function calculateRoute() {
 
         const formatTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-        // Вывод МК со значком градуса безопасным кодом Unicode
         const mkCell = row.querySelector('.cell-mk-lbl');
         const timeCell = row.querySelector('.cell-time-lbl');
         
+        // Запись значений с Юникод-знаком градуса
         mkCell.innerText = mk + "\u00B0";
         timeCell.innerText = formatTime(minutes) + " / " + formatTime(totalMin);
 
-        // Добавляем выделение светло-серым цветом после успешного расчета
-        mkCell.classList.add('calculated-highlight');
-        timeCell.classList.add('calculated-highlight');
+        // ЖЕСТКОЕ ПРИНУДИТЕЛЬНОЕ ДОБАВЛЕНИЕ СТИЛЕЙ ИЗ КОДА (ОБХОД КЭША)
+        mkCell.style.backgroundColor = "#f0f0f0";
+        mkCell.style.fontWeight = "bold";
+        
+        timeCell.style.backgroundColor = "#f0f0f0";
+        timeCell.style.fontWeight = "bold";
     }
 
     const formatTotalTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
