@@ -13,14 +13,15 @@ function initDefaultRows() {
 function addTableRow(isFirst = false) {
     const tr = document.createElement('tr');
 
+    // К ячейкам МК и Время добавлен инлайновый стиль text-align: center для строгого выравнивания по центру
     tr.innerHTML = `
         <td class="col-ppm"><input type="text" class="cell-point" style="text-align: left;"></td>
         <td class="col-equal-8"><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
         <td class="col-equal-8"><input type="number" class="cell-dist" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
         <td class="col-equal-8"><input type="number" class="cell-wdir" style="text-align: center;"></td>
         <td class="col-equal-8"><input type="number" class="cell-wspeed" style="text-align: center;"></td>
-        <td class="col-equal-8 cell-mk-lbl">${isFirst ? '—' : ''}</td>
-        <td class="col-time cell-time-lbl">${isFirst ? '—' : ''}</td>
+        <td class="col-equal-8 cell-mk-lbl" style="text-align: center;">${isFirst ? '—' : ''}</td>
+        <td class="col-time cell-time-lbl" style="text-align: center;">${isFirst ? '—' : ''}</td>
         <td class="col-note"><input type="text" class="cell-note" style="text-align: left;"></td>
     `;
     tableBody.appendChild(tr);
@@ -155,7 +156,7 @@ function calculateRoute() {
 
         const formatTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-        // Добавление значка градуса к вычисленному значению МК
+        // Вывод МК со значком градуса
         row.querySelector('.cell-mk-lbl').innerText = `${mk}°`;
         row.querySelector('.cell-time-lbl').innerText = `${formatTime(minutes)} / ${formatTime(totalMin)}`;
     }
