@@ -1,7 +1,7 @@
-// Содержимое файла script_v2.js
 let rowsData = [];
 const tableBody = document.getElementById('table_body');
 
+// Инициализация 10 строк по умолчанию
 function initDefaultRows() {
     tableBody.innerHTML = '';
     rowsData = [];
@@ -12,6 +12,7 @@ function initDefaultRows() {
 
 function addTableRow(isFirst = false) {
     const tr = document.createElement('tr');
+
     tr.innerHTML = `
         <td class="col-ppm"><input type="text" class="cell-point" style="text-align: left;"></td>
         <td class="col-equal-8"><input type="number" class="cell-zmpu" ${isFirst ? 'disabled class="disabled-cell"' : ''} style="text-align: center;"></td>
@@ -38,12 +39,14 @@ function removeWind() {
     rowsData.forEach((row, i) => {
         row.querySelector('.cell-wdir').value = '';
         row.querySelector('.cell-wspeed').value = '';
+        
         const mkCell = row.querySelector('.cell-mk-lbl');
         const timeCell = row.querySelector('.cell-time-lbl');
         mkCell.style.backgroundColor = '';
         mkCell.style.fontWeight = 'normal';
         timeCell.style.backgroundColor = '';
         timeCell.style.fontWeight = 'normal';
+
         if (i === 0) {
             mkCell.innerText = '—';
             timeCell.innerText = '—';
@@ -164,7 +167,6 @@ function calculateRoute() {
         mkCell.innerText = mk + "\u00B0";
         timeCell.innerText = formatTime(minutes) + " / " + formatTime(totalMin);
 
-        // Гарантированное добавление стилей через скрипт
         mkCell.style.setProperty('background-color', '#f0f0f0', 'important');
         mkCell.style.setProperty('font-weight', 'bold', 'important');
         
@@ -176,6 +178,106 @@ function calculateRoute() {
     const resLabel = document.getElementById('result_label');
     resLabel.style.display = 'block';
     resLabel.innerText = `Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}`;
+}
+
+// --- НОВАЯ ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СТРОГОГО PDF (15 СМ) ---
+function generatePDF() {
+    // Проверяем, выполнен ли расчет перед генерацией
+    let totalDist = 0;
+    let totalMin = 0;
+    let hasCalculatedData = false;
+    
+    // Массив для хранения цепочки изменений ветра
+    let windSegments = [];
+    let lastWDir = null;
+    let lastWSpeed = null;
+
+    let tableRowsHtml = "";
+
+    for (let i = 0; i < rowsData.length; i++) {
+        const row = rowsData[i];
+        const pName = row.querySelector('.cell-point').value.trim();
+        if (!pName) continue;
+
+        let dist = i === 0 ? "—" : row.querySelector('.cell-dist').value ? Math.round(parseFloat(row.querySelector('.cell-dist').value)) : "";
+        let mk = row.querySelector('.cell-mk-lbl').innerText;
+        let time = row.querySelector('.cell-time-lbl').innerText;
+        let note = row.querySelector('.cell-note').value.trim();
+
+        let wDirStr = row.querySelector('.cell-wdir').value.trim();
+        let wSpeedStr = row.querySelector('.cell-wspeed').value.trim();
+
+        if (wDirStr && wSpeedStr) {
+            let wd = parseFloat(wDirStr);
+            let ws = parseFloat(wSpeedStr);
+            if (wd !== lastWDir || ws !== lastWSpeed) {
+                windSegments.push({ point: pName, dir: wd, speed: ws });
+                lastWDir = wd;
+                lastWSpeed = ws;
+            }
+        }
+
+        if (i > 0 && dist !== "—" && dist !== "") {
+            totalDist += parseFloat(dist);
+            // Извлекаем минуты текущего участка из строки вида "XX:XX / YY:YY"
+            if (time && time.includes("/")) {
+                let currentSegmentTimeStr = time.split("/")[0].trim();
+                let parts = currentSegmentTimeStr.split(":");
+                totalMin += parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+                hasCalculatedData = true;
+            }
+        }
+
+        tableRowsHtml += `
+            <tr>
+                <td class="text-left">${pName}</td>
+                <td>${dist}</td>
+                <td>${mk}</td>
+                <td>${time}</td>
+                <td class="text-left">${note}</td>
+            </tr>
+        `;
+    }
+
+    if (!hasCalculatedData) {
+        alert("Ошибка: Сначала нажмите кнопку 'РАСЧЁТ', чтобы сформировать данные для PDF.");
+        return;
+    }
+
+    // Формирование строки ветра точно по вашему примеру
+    let windText = "";
+    if (windSegments.length > 0) {
+        windText = `Ветер ${windSegments[0].dir}\u00B0 ${windSegments[0].speed} км/ч`;
+        for (let k = 1; k < windSegments.length; k++) {
+            windText += `, после ${windSegments[k].point} ${windSegments[k].dir}\u00B0 ${windSegments[k].speed} км/ч`;
+        }
+    }
+
+    const formatTotalTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
+
+    // Сборка структуры печатного контейнера шириной ровно 15см
+    const printArea = document.getElementById('pdf_print_area');
+    printArea.innerHTML = `
+        <div class="pdf-title">Расчёт маршрута</div>
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">ППМ</th>
+                    <th style="width: 15%;">Расстояние</th>
+                    <th style="width: 15%;">МК</th>
+                    <th style="width: 20%;">Время</th>
+                    <th style="width: 25%;">Примечание</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tableRowsHtml}
+            </tbody>
+        </table>
+        <div class="pdf-results">Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}\n${windText}</div>
+    `;
+
+    // Вызов системного диалога печати / сохранения в PDF
+    window.print();
 }
 
 function saveRoute() {
