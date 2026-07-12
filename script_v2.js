@@ -180,7 +180,7 @@ function calculateRoute() {
     resLabel.innerText = `Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}`;
 }
 
-// --- ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СТРОГОГО PDF (ШИРИНА 14 СМ) ---
+// --- ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СТРОГОГО PDF ---
 function generatePDF() {
     let totalDist = 0;
     let totalMin = 0;
@@ -241,9 +241,10 @@ function generatePDF() {
         return;
     }
 
+    // Добавлено двоеточие после слова «Ветер»
     let windText = "";
     if (windSegments.length > 0) {
-        windText = `Ветер ${windSegments[0].dir}\u00B0 ${windSegments[0].speed} км/ч`;
+        windText = `Ветер: ${windSegments[0].dir}\u00B0 ${windSegments[0].speed} км/ч`;
         for (let k = 1; k < windSegments.length; k++) {
             windText += `, после ${windSegments[k].point} ${windSegments[k].dir}\u00B0 ${windSegments[k].speed} км/ч`;
         }
@@ -258,10 +259,10 @@ function generatePDF() {
             <thead>
                 <tr>
                     <th style="width: 25%;">ППМ</th>
-                    <th style="width: 15%;">Расстояние</th>
+                    <th style="width: 8%;">S</th>
                     <th style="width: 15%;">МК</th>
                     <th style="width: 20%;">Время</th>
-                    <th style="width: 25%;">Примечание</th>
+                    <th style="width: 32%;">Примечание</th>
                 </tr>
             </thead>
             <tbody>
