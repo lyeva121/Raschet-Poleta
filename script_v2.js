@@ -180,14 +180,12 @@ function calculateRoute() {
     resLabel.innerText = `Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}`;
 }
 
-// --- НОВАЯ ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СТРОГОГО PDF (15 СМ) ---
+// --- ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СТРОГОГО PDF (ШИРИНА 14 СМ) ---
 function generatePDF() {
-    // Проверяем, выполнен ли расчет перед генерацией
     let totalDist = 0;
     let totalMin = 0;
     let hasCalculatedData = false;
     
-    // Массив для хранения цепочки изменений ветра
     let windSegments = [];
     let lastWDir = null;
     let lastWSpeed = null;
@@ -219,7 +217,6 @@ function generatePDF() {
 
         if (i > 0 && dist !== "—" && dist !== "") {
             totalDist += parseFloat(dist);
-            // Извлекаем минуты текущего участка из строки вида "XX:XX / YY:YY"
             if (time && time.includes("/")) {
                 let currentSegmentTimeStr = time.split("/")[0].trim();
                 let parts = currentSegmentTimeStr.split(":");
@@ -244,7 +241,6 @@ function generatePDF() {
         return;
     }
 
-    // Формирование строки ветра точно по вашему примеру
     let windText = "";
     if (windSegments.length > 0) {
         windText = `Ветер ${windSegments[0].dir}\u00B0 ${windSegments[0].speed} км/ч`;
@@ -255,7 +251,6 @@ function generatePDF() {
 
     const formatTotalTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-    // Сборка структуры печатного контейнера шириной ровно 15см
     const printArea = document.getElementById('pdf_print_area');
     printArea.innerHTML = `
         <div class="pdf-title">Расчёт маршрута</div>
@@ -276,7 +271,6 @@ function generatePDF() {
         <div class="pdf-results">Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}\n${windText}</div>
     `;
 
-    // Вызов системного диалога печати / сохранения в PDF
     window.print();
 }
 
