@@ -180,7 +180,7 @@ function calculateRoute() {
     resLabel.innerText = `Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}`;
 }
 
-// --- НАДЕЖНАЯ ФУНКЦИЯ ОТКРЫТИЯ СФОРМИРОВАННОГО МАРШРУТА В НОВОЙ ВКЛАДКЕ ---
+// --- НАДЕЖНАЯ СИСТЕМА ФОРМИРОВАНИЯ И ОТКРЫТИЯ ВИДА ДОКУМЕНТА ---
 function generatePDF() {
     let totalDist = 0;
     let totalMin = 0;
@@ -230,11 +230,11 @@ function generatePDF() {
 
         tableRowsHtml += `
             <tr>
-                <td style="text-align: left; border: 1px solid #000; padding: 6px 4px;">${pName}</td>
-                <td style="border: 1px solid #000; padding: 6px 4px;">${dist}</td>
-                <td style="border: 1px solid #000; padding: 6px 4px;">${mk}</td>
-                <td style="border: 1px solid #000; padding: 6px 4px;">${time}</td>
-                <td style="text-align: left; border: 1px solid #000; padding: 6px 4px;">${note}</td>
+                <td style="text-align: left;">${pName}</td>
+                <td>${dist}</td>
+                <td>${mk}</td>
+                <td>${time}</td>
+                <td style="text-align: left;">${note}</td>
             </tr>
         `;
     }
@@ -258,94 +258,35 @@ function generatePDF() {
 
     const formatTotalTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-    // Создаем изолированное окно документа, где стилизуем точные параметры (ширина 14см, отступ 5см, серый шапка)
-    const pdfWindow = window.open("", "_blank");
-    if (!pdfWindow) {
-        alert("Ошибка: Браузер заблокировал всплывающее окно. Пожалуйста, разрешите всплывающие окна для этого сайта.");
-        return;
-    }
+    // Запись данных во встроенный экранный слой
+    const callbackContent = document.getElementById('pdf_callback_content');
+    callbackContent.innerHTML = `
+        <div class="pdf-title">${titleText}</div>
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">ППМ</th>
+                    <th style="width: 8%;">S</th>
+                    <th style="width: 15%;">МК</th>
+                    <th style="width: 20%;">Время</th>
+                    <th style="width: 32%;">Примечание</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tableRowsHtml}
+            </tbody>
+        </table>
+        <div class="pdf-results">Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}\n${windText}</div>
+    `;
 
-    pdfWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>${titleText}</title>
-            <style>
-                body {
-                    margin: 0;
-                    padding: 0;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-                    color: #000;
-                    background: #fff;
-                }
-                .container {
-                    margin-top: 5cm !important;
-                    width: 14cm !important;
-                    max-width: 14cm !important;
-                    margin-left: 20px;
-                    box-sizing: border-box;
-                }
-                .pdf-title {
-                    font-size: 16px;
-                    font-weight: bold;
-                    margin-bottom: 12px;
-                    text-align: left;
-                }
-                .pdf-table {
-                    width: 14cm !important;
-                    max-width: 14cm !important;
-                    table-layout: fixed;
-                    border-collapse: collapse;
-                    margin-bottom: 12px;
-                }
-                .pdf-table th {
-                    border: 1px solid #000;
-                    padding: 6px 4px;
-                    font-size: 12px;
-                    text-align: center;
-                    background: #f2f2f2 !important;
-                    font-weight: bold;
-                }
-                .pdf-table td {
-                    font-size: 12px;
-                    text-align: center;
-                    overflow: hidden;
-                    white-space: nowrap;
-                }
-                .pdf-results {
-                    width: 14cm !important;
-                    max-width: 14cm !important;
-                    font-size: 13px;
-                    font-weight: bold;
-                    line-height: 1.5;
-                    white-space: pre-line;
-                    word-wrap: break-word;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="pdf-title">${titleText}</div>
-                <table class="pdf-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">ППМ</th>
-                            <th style="width: 8%;">S</th>
-                            <th style="width: 15%;">МК</th>
-                            <th style="width: 20%;">Время</th>
-                            <th style="width: 32%;">Примечание</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${tableRowsHtml}
-                    </tbody>
-                </table>
-                <div class="pdf-results">Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}\n${windText}</div>
-            </div>
-        </body>
-        </html>
-    `);
-    pdfWindow.document.close();
+    // Отображаем слой просмотра документа поверх приложения
+    document.getElementById('pdf_modal').style.display = 'block';
+    // Прокручиваем страницу просмотра наверх
+    document.getElementById('pdf_modal').scrollTop = 0;
+}
+
+function closePDF() {
+    document.getElementById('pdf_modal').style.display = 'none';
 }
 
 function saveRoute() {

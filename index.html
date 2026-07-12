@@ -133,6 +133,83 @@
             background: #f0f0f0; 
             color: #aaa; 
         }
+
+        /* --- СТИЛИ ДЛЯ ЭКРАННОГО ПРОСМОТРА PDF-ВИДА БЕЗ window.open --- */
+        #pdf_modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ffffff;
+            z-index: 9999;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .pdf-page-container {
+            margin-top: 5cm !important;
+            width: 14cm !important;
+            max-width: 14cm !important;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            background: #fff;
+            position: relative;
+        }
+        .pdf-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-align: left;
+            color: #000;
+        }
+        .pdf-table {
+            width: 14cm !important;
+            max-width: 14cm !important;
+            table-layout: fixed;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+        }
+        .pdf-table th {
+            border: 1px solid #000 !important;
+            padding: 6px 4px !important;
+            font-size: 12px !important;
+            text-align: center !important;
+            background: #f2f2f2 !important; /* Светло-серый цвет верхних ячеек */
+            font-weight: bold !important;
+            color: #000;
+        }
+        .pdf-table td {
+            border: 1px solid #000 !important;
+            padding: 6px 4px !important;
+            font-size: 12px !important;
+            text-align: center !important;
+            overflow: hidden;
+            white-space: nowrap;
+            color: #000;
+        }
+        .pdf-results {
+            width: 14cm !important;
+            max-width: 14cm !important;
+            font-size: 13px !important;
+            font-weight: bold !important;
+            line-height: 1.5;
+            white-space: pre-line;
+            word-wrap: break-word;
+            color: #000;
+        }
+        .close-pdf-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -195,6 +272,11 @@
 
         <div class="card results" id="result_label" style="display: none;"></div>
 
+    </div>
+
+    <div id="pdf_modal">
+        <button class="close-pdf-btn" onclick="closePDF()">Закрыть просмотр</button>
+        <div class="pdf-page-container" id="pdf_callback_content"></div>
     </div>
 
     <script src="script_v2.js"></script>
