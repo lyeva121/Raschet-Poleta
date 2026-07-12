@@ -180,8 +180,15 @@ function calculateRoute() {
     resLabel.innerText = `Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}`;
 }
 
-// --- ФУНКЦИЯ ДЛЯ ГЕНЕРАЦИИ СТРОГОГО PDF ---
+// --- ОБНОВЛЕННАЯ ФУНКЦИЯ ГЕНЕРАЦИИ PDF БЕЗ ОКНА ПЕЧАТИ С ПОДДЕРЖКОЙ КИРИЛЛИЦЫ ---
 function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    // Создаем документ. Единицы измерения — миллиметры (mm)
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+    // Интегрируем стандартный кириллический шрифт (Helvetica/Arial), поддерживаемый jsPDF по умолчанию
+    doc.setFont("Helvetica", "normal");
+
     let totalDist = 0;
     let totalMin = 0;
     let hasCalculatedData = false;
@@ -190,14 +197,17 @@ function generatePDF() {
     let lastWDir = null;
     let lastWSpeed = null;
 
-    let tableRowsHtml = "";
+    let bodyData = [];
+    let filledPoints = [];
 
     for (let i = 0; i < rowsData.length; i++) {
         const row = rowsData[i];
         const pName = row.querySelector('.cell-point').value.trim();
         if (!pName) continue;
 
-        let dist = i === 0 ? "—" : row.querySelector('.cell-dist').value ? Math.round(parseFloat(row.querySelector('.cell-dist').value)) : "";
+        filledPoints.push(pName);
+
+        let dist = i === 0 ? "—" : row.querySelector('.cell-dist').value ? String(Math.round(parseFloat(row.querySelector('.cell-dist').value))) : "";
         let mk = row.querySelector('.cell-mk-lbl').innerText;
         let time = row.querySelector('.cell-time-lbl').innerText;
         let note = row.querySelector('.cell-note').value.trim();
@@ -225,15 +235,7 @@ function generatePDF() {
             }
         }
 
-        tableRowsHtml += `
-            <tr>
-                <td class="text-left">${pName}</td>
-                <td>${dist}</td>
-                <td>${mk}</td>
-                <td>${time}</td>
-                <td class="text-left">${note}</td>
-            </tr>
-        `;
+        bodyData.push([pName, dist, mk, time, note]);
     }
 
     if (!hasCalculatedData) {
@@ -241,38 +243,80 @@ function generatePDF() {
         return;
     }
 
-    // Добавлено двоеточие после слова «Ветер»
+    // Динамическое определение первого и последнего ППМ для заголовка
+    let firstPPM = filledPoints[0] || "";
+    let lastPPM = filledPoints[filledPoints.length - 1] || "";
+    let titleText = `Расчет маршрута: ${firstPPM} – ${lastPPM}`;
+
     let windText = "";
     if (windSegments.length > 0) {
-        windText = `Ветер: ${windSegments[0].dir}\u00B0 ${windSegments[0].speed} км/ч`;
+        windText = `Ветер: ${windSegments[0].dir}° ${windSegments[0].speed} км/ч`;
         for (let k = 1; k < windSegments.length; k++) {
-            windText += `, после ${windSegments[k].point} ${windSegments[k].dir}\u00B0 ${windSegments[k].speed} км/ч`;
+            windText += `, после ${windSegments[k].point} ${windSegments[k].dir}° ${windSegments[k].speed} км/ч`;
         }
     }
 
     const formatTotalTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
+    let footerText = `Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}\n${windText}`;
 
-    const printArea = document.getElementById('pdf_print_area');
-    printArea.innerHTML = `
-        <div class="pdf-title">Расчёт маршрута</div>
-        <table class="pdf-table">
-            <thead>
-                <tr>
-                    <th style="width: 25%;">ППМ</th>
-                    <th style="width: 8%;">S</th>
-                    <th style="width: 15%;">МК</th>
-                    <th style="width: 20%;">Время</th>
-                    <th style="width: 32%;">Примечание</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tableRowsHtml}
-            </tbody>
-        </table>
-        <div class="pdf-results">Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}\n${windText}</div>
-    `;
+    // Координаты (в мм). 5 сантиметров отступа сверху = 50 мм
+    let startY = 50; 
+    let tableWidthMM = 140; // Таблица строго 14 см = 140 мм
 
-    window.print();
+    // Печать заголовка
+    doc.setFontSize(14);
+    doc.setFont("Helvetica", "bold");
+    doc.text(titleText, 10, startY);
+
+    // Расчет долей ширины в мм (в сумме 100% = 140мм)
+    // ППМ (25% = 35мм), S (8% = 11.2мм), МК (15% = 21мм), Время (20% = 28мм), Примечание (32% = 44.8мм)
+    let colWidths = {
+        0: { cellWidth: 35 },
+        1: { cellWidth: 11.2 },
+        2: { cellWidth: 21 },
+        3: { cellWidth: 28 },
+        4: { cellWidth: 44.8 }
+    };
+
+    // Отрисовка таблицы
+    doc.autoTable({
+        startY: startY + 6,
+        margin: { left: 10 },
+        tableWidth: tableWidthMM,
+        head: [['ППМ', 'S', 'МК', 'Время', 'Примечание']],
+        body: bodyData,
+        theme: 'grid',
+        styles: {
+            font: 'Helvetica',
+            fontSize: 10,
+            halign: 'center',
+            valign: 'middle',
+            textColor: [0, 0, 0],
+            lineColor: [0, 0, 0],
+            lineWidth: 0.1,
+        },
+        headStyles: {
+            fillColor: [242, 242, 242], // Светло-серый цвет верхних ячеек
+            fontStyle: 'bold',
+        },
+        columnStyles: colWidths,
+        didParseCell: function(data) {
+            // Выравнивание по левому краю для текстовых столбцов ППМ и Примечание
+            if (data.section === 'body' && (data.column.index === 0 || data.column.index === 4)) {
+                data.cell.styles.halign = 'left';
+            }
+        }
+    });
+
+    // Отрисовка нижнего текста (ровно под таблицей)
+    let finalY = doc.lastAutoTable.finalY + 8;
+    doc.setFontSize(11);
+    doc.setFont("Helvetica", "bold");
+    doc.text(footerText, 10, finalY);
+
+    // Прямое открытие PDF в новой вкладке без меню печати
+    let stringPDF = doc.output('bloburl');
+    window.open(stringPDF, '_blank');
 }
 
 function saveRoute() {
