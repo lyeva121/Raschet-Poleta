@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расчёт маршрута вертолета</title>
+    
+    <!-- Подключение манифеста для Android/Chrome -->
     <link rel="manifest" href="manifest.json">
+    
+    <!-- Поддержка иконки на главном экране для iOS (Apple-устройства) -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Маршрут">
+    
     <style>
         :root { 
             --primary: #4CAF50; 
@@ -175,7 +185,7 @@
                 padding: 6px 4px !important;
                 font-size: 12px !important;
                 text-align: center !important;
-                background: #f2f2f2 !important; 
+                background: #f2f2f2 !important;
                 font-weight: bold !important;
                 color: #000 !important;
                 -webkit-print-color-adjust: exact;
@@ -241,7 +251,8 @@
                     </tr>
                 </thead>
                 <tbody id="table_body">
-                    </tbody>
+                    <!-- Генерируется через скрипт -->
+                </tbody>
             </table>
         </div>
 
@@ -256,7 +267,7 @@
             <button class="btn" onclick="saveRoute()">Сохранить</button>
             <button class="btn" onclick="triggerOpenRoute()">Открыть</button>
             <button class="btn" onclick="generatePDF()">PDF</button>
-            <input type="file" id="file_input" accept=".json,application/json,text/plain,text/json,application/octet-stream,*/*" style="display: none;" onchange="openRoute(event)">
+            <input type="file" id="file_input" accept=".json,application/json,text/plain,text/json" style="display: none;" onchange="openRoute(event)">
         </div>
 
         <button class="btn-calc" onclick="calculateRoute()">РАСЧЁТ</button>
