@@ -180,7 +180,7 @@ function calculateRoute() {
     resLabel.innerText = `Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}`;
 }
 
-// --- НАДЕЖНАЯ СИСТЕМА ФОРМИРОВАНИЯ И ОТКРЫТИЯ ВИДА ДОКУМЕНТА ---
+// --- НАДЕЖНЫЙ МЕХАНИЗМ ГЕНЕРАЦИИ PDF ЧЕРЕЗ ШТАТНЫЙ ИНТЕРФЕЙС УСТРОЙСТВА ---
 function generatePDF() {
     let totalDist = 0;
     let totalMin = 0;
@@ -258,9 +258,9 @@ function generatePDF() {
 
     const formatTotalTime = (m) => `${Math.floor(m/60)}:${String(m%60).padStart(2, '0')}`;
 
-    // Запись данных во встроенный экранный слой
-    const callbackContent = document.getElementById('pdf_callback_content');
-    callbackContent.innerHTML = `
+    // Рендерим документ в скрытый контейнер
+    const printArea = document.getElementById('print_area');
+    printArea.innerHTML = `
         <div class="pdf-title">${titleText}</div>
         <table class="pdf-table">
             <thead>
@@ -279,14 +279,11 @@ function generatePDF() {
         <div class="pdf-results">Общее расстояние: ${Math.round(totalDist)} км\nОбщее время: ${formatTotalTime(totalMin)}\n${windText}</div>
     `;
 
-    // Отображаем слой просмотра документа поверх приложения
-    document.getElementById('pdf_modal').style.display = 'block';
-    // Прокручиваем страницу просмотра наверх
-    document.getElementById('pdf_modal').scrollTop = 0;
-}
-
-function closePDF() {
-    document.getElementById('pdf_modal').style.display = 'none';
+    // Вызываем нативный диалог печати. При этом CSS скроет всё лишнее, кроме созданной таблицы.
+    // На мобильных устройствах это откроет системный просмотрщик, где можно выбрать «Сохранить в PDF» или «Печать».
+    setTimeout(() => {
+        window.print();
+    }, 150);
 }
 
 function saveRoute() {
@@ -313,25 +310,29 @@ function openRoute(event) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(e) {
-        const data = JSON.parse(e.target.result);
-        newRoute();
-        document.getElementById('speed_entry').value = data.speed || '';
-        const rData = data.rows || [];
-        
-        while (rowsData.length < rData.length) addTableRow();
+        try {
+            const data = JSON.parse(e.target.result);
+            newRoute();
+            document.getElementById('speed_entry').value = data.speed || '';
+            const rData = data.rows || [];
+            
+            while (rowsData.length < rData.length) addTableRow();
 
-        rData.forEach((item, i) => {
-            rowsData[i].querySelector('.cell-point').value = item.point || '';
-            rowsData[i].querySelector('.cell-note').value = item.note || '';
-            if (i !== 0) {
-                rowsData[i].querySelector('.cell-zmpu').disabled = false;
-                rowsData[i].querySelector('.cell-zmpu').classList.remove('disabled-cell');
-                rowsData[i].querySelector('.cell-zmpu').value = item.zmpu || '';
-                rowsData[i].querySelector('.cell-dist').disabled = false;
-                rowsData[i].querySelector('.cell-dist').classList.remove('disabled-cell');
-                rowsData[i].querySelector('.cell-dist').value = item.distance || '';
-            }
-        });
+            rData.forEach((item, i) => {
+                rowsData[i].querySelector('.cell-point').value = item.point || '';
+                rowsData[i].querySelector('.cell-note').value = item.note || '';
+                if (i !== 0) {
+                    rowsData[i].querySelector('.cell-zmpu').disabled = false;
+                    rowsData[i].querySelector('.cell-zmpu').classList.remove('disabled-cell');
+                    rowsData[i].querySelector('.cell-zmpu').value = item.zmpu || '';
+                    rowsData[i].querySelector('.cell-dist').disabled = false;
+                    rowsData[i].querySelector('.cell-dist').classList.remove('disabled-cell');
+                    rowsData[i].querySelector('.cell-dist').value = item.distance || '';
+                }
+            });
+        } catch (err) {
+            alert("Ошибка чтения файла. Убедитесь, что формат файла корректен.");
+        }
     };
     reader.readAsText(file);
 }
